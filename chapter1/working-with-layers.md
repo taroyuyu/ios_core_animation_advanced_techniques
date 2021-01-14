@@ -60,11 +60,66 @@ CALayer的*backgroundColor*属性的类型是`CGColorRef`，而不是像UIView�
 
 &nbsp;&nbsp;&nbsp;&nbsp;然而，出于以下几个原因，你可能更需要使用*托管(hosted)*的`CALayer`而不是带有图层支持的`UIView`:
 
-（疑问：啥是*托管*的CALayer？应该就是包装的意思）
-
 * 开发可以同时在Mac OS和iOS上运行的跨平台应用
 * 使用多种不同的`CALayer`子类（见第六章，“特殊的图层“），但又不想创建一个新的`UIView`去包"托管"它们
 * 做一些对性能特别挑剔的工作，比如对`UIView`一些可忽略不计的操作都会引起显著的不同（尽管如此，你可能会直接想使用OpenGL绘图）
 
 
 &nbsp;&nbsp;&nbsp;&nbsp;但是这些例子都很少见，总的来说，处理视图会比单独处理图层更加方便。
+
+（疑问：啥是*托管*的CALayer？应该就是包装的意思）
+
+https://stackoverflow.com/questions/351503/whats-the-difference-between-a-coreanimation-layer-backed-view-and-a-layer-host
+
+https://stackoverflow.com/questions/35734858/calayer-vs-layer-backed-nsview-performance
+
+https://codeforfun.wordpress.com/2010/02/22/core-animation-layer-backing-vs-layer-hosting/#:~:text=Layer%20Hosting%20Views,-When%20an%20NSView&text=When%20one%20of%20those%20views,vewy%2C%20big%20job%20to%20do.
+
+https://www.swwritings.com/post/2010-05-22-core-animation-animator-proxy-calayers-layer-backed-layer-hosting
+
+https://gist.github.com/nil-ableton/84187254cd0ae1d5aa212ecf6b6e50c0
+
+https://blog.rachelbrindle.com/2015/08/21/osx-programming-set-up-core-animation/
+
+https://docs.huihoo.com/apple/wwdc/2012/session_217__layerbacked_views_appkit__core_animation.pdf
+
+https://www.objc.io/issues/14-mac/appkit-for-uikit-developers/
+
+https://objccn.io/issue-14-5/
+
+https://community.esri.com/t5/arcgis-enterprise-ideas/feature-layer-views-for-non-hosted-data/idi-p/923756
+
+https://chromium.googlesource.com/chromium/src/+/66.0.3359.158/ui/views/cocoa/bridged_native_widget.mm
+
+https://medium.com/@avaidyam/an-exercise-in-modern-cocoa-views-e88bbdea277f
+
+https://avaidyam.github.io/2018/03/22/Exercise-Modern-Cocoa-Views.html
+
+https://codeforfun.wordpress.com/2010/02/22/core-animation-layer-backing-vs-layer-hosting/#:~:text=When%20an%20NSView%20(not%20a,more%20advanced%20animation%20and%20all.
+
+https://developer.apple.com/videos/play/wwdc2012/217/
+
+https://developer.apple.com/documentation/appkit/nsview/1483695-wantslayer
+
+https://developer.apple.com/documentation/appkit/nsview/1483687-makebackinglayer
+
+https://developer.apple.com/documentation/appkit/nsview/1483347-candrawsubviewsintolayer
+
+https://www.jianshu.com/p/e0c3970e3d5b
+
+https://cocoa-dev.apple.narkive.com/qs8vWXuZ/xcode-10-and-disable-layer-backed-windows-in-mojave
+
+https://asciiwwdc.com/2013/sessions/215
+
+https://www.iditect.com/how-to/30141586.html
+
+https://www.youtube.com/watch?v=EWNkfd-tArY
+
+https://blog.rachelbrindle.com/2015/08/21/osx-programming-set-up-core-animation/
+
+https://livebook.manning.com/book/macruby-in-action/chapter-8/
+
+https://web.stanford.edu/class/cs193e/Downloads/20-CocoaAnimation.pdf
+
+https://cocoadev.github.io/CoreAnimation/
+
