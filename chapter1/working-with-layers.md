@@ -123,3 +123,9 @@ https://web.stanford.edu/class/cs193e/Downloads/20-CocoaAnimation.pdf
 
 https://cocoadev.github.io/CoreAnimation/
 
+https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/CocoaViewsGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40002978
+
+https://developer.apple.com/videos/wwdc2012/#217
+
+https://developer.apple.com/videos/wwdc2013/#215
+
