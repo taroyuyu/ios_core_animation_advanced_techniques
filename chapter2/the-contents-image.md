@@ -1,11 +1,11 @@
-##contents属性
-CALayer 有一个属性叫做`contents`，这个属性的类型被定义为id，意味着它可以是任何类型的对象。在这种情况下，你可以给`contents`属性赋任何值，你的app仍然能够编译通过。但是，在实践中，如果你给`contents`赋的不是CGImage，那么你得到的图层将是空白的。
+## contents属性
+CALayer 有一个`contents`属性，这个属性的类型是`id`，意味着它可以是任何类型的对象。由于该属性是`id`类型，你“可以”给`contents`属性赋任何值，并且你的app仍然能够编译通过。但是，在实践中，如果你给`contents`赋的不是CGImage，那么你得到的图层将是空白的。
 
-`contents`这个奇怪的表现是由Mac OS的历史原因造成的。它之所以被定义为id类型，是因为在Mac OS系统上，这个属性对CGImage和NSImage类型的值都起作用。如果你试图在iOS平台上将UIImage的值赋给它，只能得到一个空白的图层。一些初识Core Animation的iOS开发者可能会对这个感到困惑。
+`contents`属性这个奇怪的现象是由Core Animation 在Mac OS中的历史原因造成的。它之所以被定义为id类型，是因为在Mac OS系统上，这个属性对CGImage和NSImage类型的值都起作用。如果你试图在iOS平台上将UIImage的值赋给它，只能得到一个空白的图层。一些初识Core Animation的iOS开发者可能会对这个感到困惑。
 
-头疼的不仅仅是我们刚才提到的这个问题。事实上，你真正要赋值的类型应该是CGImageRef，它是一个指向CGImage结构的指针。UIImage有一个CGImage属性，它返回一个"CGImageRef",如果你想把这个值直接赋值给CALayer的`contents`，那你将会得到一个编译错误。因为CGImageRef并不是一个真正的Cocoa对象，而是一个Core Foundation类型。
+然而，令人头疼的不仅仅是我们刚才提到的这个问题。事实上，你真正要赋值的类型应该是CGImageRef，它是一个指向CGImage结构的指针。UIImage有一个CGImage属性，它返回一个"CGImageRef".但是，如果你想把这个值直接赋值给CALayer的`contents`，那你将会得到一个编译错误。因为CGImageRef并不是一个真正的Cocoa对象，而是一个Core Foundation类型。
 
-尽管Core Foundation类型跟Cocoa对象在运行时貌似很像（被称作toll-free bridging），他们并不是类型兼容的，不过你可以通过bridged关键字转换。如果要给图层的寄宿图赋值，你可以按照以下这个方法：
+尽管Core Foundation类型跟Cocoa对象在运行时貌似很像（被称作toll-free bridging），但它们并不是类型兼容的，不过你可以通过bridged关键字转换。如果要给图层的寄宿图赋值，你可以按照以下这个方法：
 
 ``` objective-c
 layer.contents = (__bridge id)image.CGImage;
@@ -13,7 +13,7 @@ layer.contents = (__bridge id)image.CGImage;
 
 如果你没有使用ARC（自动引用计数），你就不需要__bridge这部分。但是，你干嘛不用ARC？！
 
-让我们来继续修改我们在第一章新建的工程，以便能够展示一张图片而不仅仅是一个背景色。我们已经用代码的方式建立一个图层，那我们就不需要额外的图层了。那么我们就直接把layerView的宿主图层的`contents`属性设置成图片。
+让我们来继续修改我们在第一章新建的工程，以便能够展示一张图片而不仅仅是一个背景色。我们已经用代码的方式建立一个图层，那我们就不需要额外的图层了。那么我们就直接给layerView的宿主图层的`contents`属性赋值一个图片。
 
 清单2.1 更新后的代码。
 
@@ -35,18 +35,18 @@ layer.contents = (__bridge id)image.CGImage;
 
 ![图2.1](./2.1.png)
 
-我们用这些简单的代码做了一件很有趣的事情：我们利用CALayer在一个普通的UIView中显示了一张图片。这不是一个UIImageView，它不是我们通常用来展示图片的方法。通过直接操作图层，我们使用了一些新的函数，使得UIView更加有趣了。
+我们用这些简单的代码做了一件很有趣的事情：我们利用CALayer在一个普通的UIView中显示了一张图片。但这个视图并不是一个UIImageView。但这种方式也不是我们通常用来展示图片的方法。通过直接操作图层，我们使用了一些新的功能，使得UIView更加有趣了。
 
 **contentGravity**
 
-你可能已经注意到了我们的雪人看起来有点。。。胖 ＝＝！ 我们加载的图片并不刚好是一个方的，为了适应这个视图，它有一点点被拉伸了。在使用UIImageView的时候遇到过同样的问题，解决方法就是把`contentMode`属性设置成更合适的值，像这样：
+你可能已经注意到了我们的雪人看起来有点。。。胖 ＝＝！ 我们加载的图片并不刚好是一个正方形，为了适应这个视图，它有一点点被拉伸了。在使用UIImageView的时候你可能遇到过同样的问题，解决方法就是把视图的`contentMode`属性设置成一个合适的值，像这样：
 
 ```objective-c
 view.contentMode = UIViewContentModeScaleAspectFit;
 ```
-这个方法基本和我们遇到的情况的解决方法已经接近了（你可以试一下 :) ），不过UIView大多数视觉相关的属性比如`contentMode`，对这些属性的操作其实是对对应图层的操作。
+我们遇到的这个问题也可以用这种方式解决（你可以试一下 :) ），不过UIView大多数视觉相关的属性比如`contentMode`，对这些属性的操作其实是对其关联图层对应属性的等效操作。
 
-CALayer与`contentMode`对应的属性叫做`contentsGravity`，但是它是一个NSString类型，而不是像对应的UIKit部分，那里面的值是枚举。`contentsGravity`可选的常量值有以下一些：
+CALayer中与`contentMode`对应的属性叫做`contentsGravity`，但它是一个NSString类型而不是一个枚举类型。`contentsGravity`的可选常量值有以下一些：
 
 * kCAGravityCenter
 * kCAGravityTop
@@ -61,7 +61,7 @@ CALayer与`contentMode`对应的属性叫做`contentsGravity`，但是它是一�
 * kCAGravityResizeAspect
 * kCAGravityResizeAspectFill
 
-和`cotentMode`一样，`contentsGravity`的目的是为了决定内容在图层的边界中怎么对齐，我们将使用kCAGravityResizeAspect，它的效果等同于UIViewContentModeScaleAspectFit， 同时它还能在图层中等比例拉伸以适应图层的边界。
+和`cotentMode`一样，`contentsGravity`的作用是用于确定内容在图层的边界内的对齐方式。这里，我们将使用kCAGravityResizeAspect，它的效果等同于UIViewContentModeScaleAspectFit， 能在图层中等比例拉伸内容以适应图层的边界，并保证不改变其宽高比。
 
 ```objective-c
 self.layerView.layer.contentsGravity = kCAGravityResizeAspect;
@@ -71,27 +71,27 @@ self.layerView.layer.contentsGravity = kCAGravityResizeAspect;
 
 ![image](./2.2.png)
 
-图2.2 正确地设置`contentsGravity`的值
+图2.2 正确设置`contentsGravity`属性后雪人的图像
 
-##contentsScale
+## contentsScale
 
 `contentsScale`属性定义了寄宿图的像素尺寸和视图大小的比例，默认情况下它是一个值为1.0的浮点数。
 
-`contentsScale`的目的并不是那么明显。它并不是总会对屏幕上的寄宿图有影响。如果你尝试对我们的例子设置不同的值，你就会发现根本没任何影响。因为`contents`由于设置了`contentsGravity`属性，所以它已经被拉伸以适应图层的边界。
+`contentsScale`的用途并不是那么明显。它并不总是具有缩放屏幕上背景图像的效果。如果你在我们的例子中尝试设置不同的值，你就会发现根本没任何影响。因为我们已经设置了`contentsGravity`属性，所以*寄宿图*已经被拉伸以适应图层的边界。
 
-如果你只是单纯地想放大图层的`contents`图片，你可以通过使用图层的`transform`和`affineTransform`属性来达到这个目的（见第五章『Transforms』，里面对此有解释），这(指放大)也不是`contengsScale`的目的所在.
+如果你只是单纯地想放大图层的`contents`(寄宿图)，你可以通过图层的`transform`和`affineTransform`这两个属性来达到目的（见第五章『Transforms』，里面对此有解释），缩放*contents*不是`contengsScale`的目的所在.
 
-`contentsScale`属性其实属于支持高分辨率（又称Hi-DPI或Retina）屏幕机制的一部分。它用来判断在绘制图层的时候应该为寄宿图创建的空间大小，和需要显示的图片的拉伸度（假设并没有设置`contentsGravity`属性）。UIView有一个类似功能但是非常少用到的`contentScaleFactor`属性。
+`contentsScale`属性属于支持高分辨率（又称Hi-DPI或Retina）屏幕机制的一部分。它被用来判断在图层进行绘图时应该为寄宿图创建的空间大小，以及需要显示的图片的拉伸度（假设并没有设置`contentsGravity`属性）。UIView有一个功能类似但是非常少用到的`contentScaleFactor`属性。
 
-如果`contentsScale`设置为1.0，将会以每个点1个像素绘制图片，如果设置为2.0，则会以每个点2个像素绘制图片，这就是我们熟知的Retina屏幕。（如果你对像素和点的概念不是很清楚的话，这个章节的后面部分将会对此做出解释）。
+如果`contentsScale`设置为1.0，将会以每个点对应1个像素的方式绘制图片，如果设置为2.0，则会以每个点对应2个像素的方式绘制图片，这就是我们熟知的Retina屏幕。（如果你对像素和点的概念不是很清楚的话，这个章节的后面部分将会对此做出解释）。
 
 这并不会对我们在使用kCAGravityResizeAspect时产生任何影响，因为它就是拉伸图片以适应图层而已，根本不会考虑到分辨率问题。但是如果我们把`contentsGravity`设置为kCAGravityCenter（这个值并不会拉伸图片），那将会有很明显的变化（如图2.3）
 
 ![图2.3](./2.3.png)
 
-图2.3 用错误的`contentsScale`属性显示Retina图片
+图2.3 用错误的`contentsScale`属性值显示Retina图片
 
-如你所见，我们的雪人不仅有点大还有点像素的颗粒感。那是因为和UIImage不同，CGImage没有拉伸的概念。当我们使用UIImage类去读取我们的雪人图片的时候，他读取了高质量的Retina版本的图片。但是当我们用CGImage来设置我们的图层的内容时，拉伸这个因素在转换的时候就丢失了。不过我们可以通过手动设置`contentsScale`来修复这个问题（如2.2清单），图2.4是结果
+如你所见，我们的雪人不仅有点大还有点像素的颗粒感。那是因为和UIImage不同，CGImage没有拉伸的概念。当我们使用UIImage类去读取我们的雪人图片的时候，他读取了高质量的Retina版本的图片。但是当我们用CGImage来设置我们的图层的内容时，缩放这个因子在类型转换的时候就丢失了。不过我们可以通过手动设置`contentsScale`来修复这个问题（如2.2清单），图2.4是结果
 
 ```objective-c
 @implementation ViewController
