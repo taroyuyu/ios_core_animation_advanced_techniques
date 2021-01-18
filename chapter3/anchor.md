@@ -1,18 +1,18 @@
 # 锚点
 
-&nbsp;&nbsp;&nbsp;&nbsp;之前提到过，视图的`center`属性和图层的`position`属性都指定了`anchorPoint`相对于父图层的位置。图层的`anchorPoint`通过`position`来控制它的`frame`的位置，你可以认为`anchorPoint`是用来移动图层的*把柄*。
+&nbsp;&nbsp;&nbsp;&nbsp;之前提到过，视图的`center`属性和图层的`position`属性都指定了该图层的`anchorPoint`相对于父图层的位置。**图层的`anchorPoint`属性控制图层的frame相对于图层的position的位置**。你可以认为`anchorPoint`是用来移动图层的*句柄*。
 
-&nbsp;&nbsp;&nbsp;&nbsp;默认来说，`anchorPoint`位于图层的中点，所以图层的将会以这个点为中心放置。`anchorPoint`属性并没有被`UIView`接口暴露出来，这也是视图的position属性被叫做“center”的原因。但是图层的`anchorPoint`可以被移动，比如你可以把它置于图层`frame`的左上角，于是图层的内容将会向右下角的`position`方向移动（图3.3），而不是居中了。
+&nbsp;&nbsp;&nbsp;&nbsp;**默认情况下，`anchorPoint`位于图层的中点，所以图层将会以这个点为中心放置。`anchorPoint`属性并没有在`UIView`中暴露出来，这也是视图的position属性被叫做“center”的原因**。**但是图层的`anchorPoint`可以被移动，比如你可以把它置于图层`frame`的左上角，于是图层在其父视图中的位置将会向右下角方向移动。**（图3.3），而不是居中了。
 
 <img src="./3.3.jpeg" alt="图3.3" title="图3.3" width="700"/>
 
 图3.3 改变`anchorPoint`的效果
 
-&nbsp;&nbsp;&nbsp;&nbsp;和第二章提到的`contentsRect`和`contentsCenter`属性类似，`anchorPoint`用*单位坐标*来描述，也就是图层的相对坐标，图层左上角是{0, 0}，右下角是{1, 1}，因此默认坐标是{0.5, 0.5}。`anchorPoint`可以通过指定x和y值小于0或者大于1，使它放置在图层范围之外。
+&nbsp;&nbsp;&nbsp;&nbsp;和第二章提到的`contentsRect`和`contentsCenter`属性类似，`anchorPoint`用*单位坐标*来描述，这意味着它的坐标是相对于层的尺寸的，图层左上角是{0, 0}，右下角是{1, 1}，因此默认坐标是{0.5, 0.5}。`anchorPoint`可以通过指定x和y值小于0或者大于1，使它放置在图层范围之外。
 
-&nbsp;&nbsp;&nbsp;&nbsp;注意在图3.3中，当改变了`anchorPoint`，`position`属性保持固定的值并没有发生改变，但是`frame`却移动了。
+&nbsp;&nbsp;&nbsp;&nbsp;注意在图3.3中，**当我们改变了`anchorPoint`，`position`属性保持固定的值并没有发生改变，但是`frame`却改变了**。
 
-&nbsp;&nbsp;&nbsp;&nbsp;那在什么场合需要改变`anchorPoint`呢？既然我们可以随意改变图层位置，那改变`anchorPoint`不会造成困惑么？为了举例说明，我们来举一个实用的例子，创建一个模拟闹钟的项目。
+&nbsp;&nbsp;&nbsp;&nbsp;那在什么场合需要改变`anchorPoint`呢？既然我们可以通过frame随意改变图层的位置，那改变`anchorPoint`不会造成困惑么？为了举例说明，我们来举一个实用的例子，创建一个模拟闹钟的项目。
 
 &nbsp;&nbsp;&nbsp;&nbsp;钟面和钟表由四张图片组成（图3.4），为了简单说明，我们还是用传统的方式来装载和加载图片，使用四个`UIImageView`实例（当然你也可以用正常的视图，设置他们图层的`contents`图片）。
 
@@ -102,3 +102,30 @@
 <img src="./3.7.jpeg" alt="图3.7" title="图3.7" width="700"/>
 
 图3.7 钟面，和正确对齐的钟指针
+
+
+
+https://blog.csdn.net/qq114776315/article/details/40553879
+
+https://blog.csdn.net/xuguangsoft/article/details/8425623
+
+https://segmentfault.com/a/1190000000722574
+
+https://developer.apple.com/documentation/spritekit/skspritenode/using_the_anchor_point_to_move_a_sprite
+
+https://www.jianshu.com/p/499ce31ac2f6
+
+http://www.garethelms.org/2014/06/help-with-spritekit-position-and-anchorpoint
+
+http://www.garethelms.org/2014/06/help-with-spritekit-position-and-anchorpoint
+
+https://blog.csdn.net/Mazy_ma/article/details/52399340
+
+http://studentdeng.github.io/blog/2014/06/13/auto-layout/
+
+
+
+应用：
+
+https://github.com/core-plot/core-plot
+
