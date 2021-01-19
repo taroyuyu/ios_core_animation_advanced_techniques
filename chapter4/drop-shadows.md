@@ -31,15 +31,15 @@
 
 图4.7 图层阴影遵循图层背景图像的精确轮廓。
 
-&nbps;&nbsp;&nbsp;&nbsp;当阴影和裁剪扯上关系的时候就有一个头疼的限制：阴影通常就是在Layer的边界之外，如果你开启了`masksToBounds`属性，所有从图层中突出来的内容都会被才剪掉。如果我们在我们之前的边框示例项目中增加图层的阴影属性时，你就会发现问题所在（见图4.8）.
+&nbps;&nbsp;&nbsp;&nbsp;**当阴影和裁剪相结合的时候就有一个令人头疼的限制：阴影通常是绘制在Layer的边界之外，如果你开启了`masksToBounds`属性，阴影将与任何其它突出在图层之外的内容一起被剪切掉**。如果我们在我们之前的边框示例项目中增加图层的阴影属性时，你就会发现问题所在（见图4.8）.
 
 ![图4.8](./4.8.png)
 
 图4.8 `maskToBounds`属性裁剪掉了阴影和内容
 
-&nbps;&nbsp;&nbsp;&nbsp;从技术角度来说，这个结果是可以是可以理解的，但确实又不是我们想要的效果。如果你想沿着内容裁切，你需要用到两个图层：一个只画阴影的空的外图层，和一个用`masksToBounds`裁剪内容的内图层。
+&nbps;&nbsp;&nbsp;&nbsp;从技术角度来说，这个结果是可以是可以理解的，但确实又不是我们想要的效果。**如果你想沿着内容裁切并投射阴影，你需要用到两个图层：一个只画阴影的空的外图层（即内图层的父图层），和一个启用`masksToBounds`属性（用于裁剪内容）的内图层（即外图层的子图层）**。
 
-&nbps;&nbsp;&nbsp;&nbsp;如果我们把之前项目的右边用单独的视图把裁剪的视图包起来，我们就可以解决这个问题（如图4.9）.
+&nbps;&nbsp;&nbsp;&nbsp;如果我们更新我们的项目，使用一个附加的视图来包裹右边的剪贴视图，我们就可以解决这个问题(见图4.9)。
 
 ![图4.9](./4.9.png)
 
@@ -95,9 +95,9 @@
 ### shadowPath属性
 
 
-&nbsp;&nbsp;&nbsp;&nbsp;我们已经知道图层阴影并不总是方的，而是从图层内容的形状继承而来。这看上去不错，但是实时计算阴影也是一个非常消耗资源的，尤其是图层有多个子图层，每个图层还有一个有透明效果的寄宿图的时候。
+&nbsp;&nbsp;&nbsp;&nbsp;我们已经知道图层阴影并不总是方的，而是来源于图层的内容。这看上去不错，但是**实时计算阴影也是一个非常消耗资源的，尤其是图层有多个子图层，每个图层还有一个有透明效果(alpha-masked)的寄宿图的时候**。
 
-&nbsp;&nbsp;&nbsp;&nbsp;如果你事先知道你的阴影形状会是什么样子的，你可以通过指定一个`shadowPath`来提高性能。`shadowPath`是一个`CGPathRef`类型（一个指向`CGPath`的指针）。`CGPath`是一个Core Graphics对象，用来指定任意的一个矢量图形。我们可以通过这个属性单独于图层形状之外指定阴影的形状。
+&nbsp;&nbsp;&nbsp;&nbsp;**如果你事先知道你的阴影形状会是什么样子的，你可以通过指定一个`shadowPath`来提高性能。`shadowPath`是一个`CGPathRef`类型（一个指向`CGPath`的指针）。`CGPath`是一个Core Graphics对象，用来指定任意的一个*矢量图形*。我们可以通过这个属性来指定阴影的形状而不依赖于图层的内容**。
 
 图4.11 展示了同一寄宿图的不同阴影设定。如你所见，我们使用的图形很简单，但是它的阴影可以是你想要的任何形状。清单4.4是代码实现。
 
@@ -137,7 +137,27 @@
 @end
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;如果是一个矩形或者是圆，用`CGPath`会相当简单明了。但是如果是更加复杂一点的图形，`UIBezierPath`类会更合适，它是一个由UIKit提供的在CGPath基础上的Objective-C包装类。
+&nbsp;&nbsp;&nbsp;&nbsp;**如果是一个矩形或者是圆，用`CGPath`会相当简单明了。但是如果是更加复杂一点的图形，`UIBezierPath`类会更合适，它是一个由UIKit提供的在CGPath基础上的Objective-C包装类**。
 
 
 图4.6 大一些的阴影位移和角半径会增加图层的深度即视感
+
+
+
+https://www.hackingwithswift.com/articles/155/advanced-uiview-shadow-effects-using-shadowpath
+
+http://angelolloqui.com/blog/30-iOS-Performance-tips-I-Drawing-shadows
+
+https://stackoverflow.com/questions/10133109/fastest-way-to-do-shadows-on-ios
+
+https://stackoverflow.com/questions/9997972/calayer-shadow-causes-a-performance-hit?noredirect=1&lq=1
+
+https://damir.me/rounded-uiview-with-shadow-the-right-way/
+
+https://damir.me/rounded-uiview-with-shadow-the-right-way/
+
+https://stackoverflow.com/questions/7746921/iphone-animations-performance-is-very-poor-when-views-shadow-is-on
+
+https://www.donnywals.com/high-performance-shadows-for-uiview/
+
+https://swiftlemma.com/2017/08/20/better-shadow-performance-on-views/
