@@ -1,9 +1,11 @@
 # CAEmitterLayer
 
 
-在iOS 5中，苹果引入了一个新的`CALayer`子类叫做`CAEmitterLayer`。`CAEmitterLayer`是一个高性能的粒子引擎，被用来创建实时例子动画如：烟雾，火，雨等等这些效果。
+在iOS 5中，苹果引入了一个新的`CALayer`子类叫做`CAEmitterLayer`。**`CAEmitterLayer`是一个高性能的粒子引擎，旨在用于创建实时粒子动画如：烟雾，火，雨等等这些效果**。
 
-`CAEmitterLayer`看上去像是许多`CAEmitterCell`的容器，这些`CAEmitierCell`定义了一个例子效果。你将会为不同的例子效果定义一个或多个`CAEmitterCell`作为模版，同时`CAEmitterLayer`负责基于这些模版实例化一个粒子流。一个`CAEmitterCell`类似于一个`CALayer`：它有一个`contents`属性可以定义为一个`CGImage`，另外还有一些可设置属性控制着表现和行为。我们不会对这些属性逐一进行详细的描述，你们可以在`CAEmitterCell`类的头文件中找到。
+**`CAEmitterLayer`是一个`CAEmitterCell`的容器，其中`CAEmitterCell`用于定义一个粒子特效**。**通过创建`CAEmitterCell`对象来定义不同的粒子特效，随后`CAEmitterLayer`负责基于这些`CAEmitterCell`对象创建一个粒子流**。
+
+**一个`CAEmitterCell`类似于一个`CALayer`：它有一个`contents`属性可以接收一个CGImage类型的值，以及一些属性控制粒子的外观和行为**。我们不会对这些属性逐一进行详细的描述，你们可以在`CAEmitterCell`类的头文件中找到。
 
 我们来举个例子。我们将利用在一圆中发射不同速度和透明度的粒子创建一个火爆炸的效果。清单6.13包含了生成爆炸的代码。图6.13是运行结果
 
