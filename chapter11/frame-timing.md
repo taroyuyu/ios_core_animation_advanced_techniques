@@ -1,12 +1,12 @@
-##定时帧
+## 定时帧
 
 动画看起来是用来显示一段连续的运动过程，但实际上当在固定位置上展示像素的时候并不能做到这一点。一般来说这种显示都无法做到连续的移动，能做的仅仅是足够快地展示一系列静态图片，只是看起来像是做了运动。
 
-我们之前提到过iOS按照每秒60次刷新屏幕，然后`CAAnimation`计算出需要展示的新的帧，然后在每次屏幕更新的时候同步绘制上去，`CAAnimation`最机智的地方在于每次刷新需要展示的时候去计算插值和缓冲。
+**我们之前提到过iOS按照每秒60次刷新屏幕，然后`CAAnimation`计算出需要展示的新的帧，然后在每次屏幕更新的时候同步绘制上去，CAAnimation最聪明的地方在于进行插值和简化计算，以确定每次要显示什么**。
 
 在第10章中，我们解决了如何自定义缓冲函数，然后根据需要展示的帧的数组来告诉`CAKeyframeAnimation`的实例如何去绘制。所有的Core Animation实际上都是按照一定的序列来显示这些帧，那么我们可以自己做到这些么？
 
-###`NSTimer`
+### `NSTimer`
 
 实际上，我们在第三章“图层几何学”中已经做过类似的东西，就是时钟那个例子，我们用了`NSTimer`来对钟表的指针做定时动画，一秒钟更新一次，但是如果我们把频率调整成一秒钟更新60次的话，原理是完全相同的。
 
@@ -141,13 +141,13 @@ float bounceEaseOut(float t)
 * 基于真实帧的持续时间而不是假设的更新频率来做动画。
 * 调整动画计时器的`run loop`模式，这样就不会被别的事件干扰。
 
-###`CADisplayLink`
+### `CADisplayLink`
 
-`CADisplayLink`是CoreAnimation提供的另一个类似于`NSTimer`的类，它总是在屏幕完成一次更新之前启动，它的接口设计的和`NSTimer`很类似，所以它实际上就是一个内置实现的替代，但是和`timeInterval`以秒为单位不同，`CADisplayLink`有一个整型的`frameInterval`属性，指定了间隔多少帧之后才执行。默认值是1，意味着每次屏幕更新之前都会执行一次。但是如果动画的代码执行起来超过了六十分之一秒，你可以指定`frameInterval`为2，就是说动画每隔一帧执行一次（一秒钟30帧）或者3，也就是一秒钟20次，等等。
+`CADisplayLink`是CoreAnimation提供的另一个类似于`NSTimer`的类，它总是在屏幕重绘之前立即触发，它的接口设计的和`NSTimer`很类似，所以它实际上就是一个内置实现的替代，但是和`timeInterval`以秒为单位不同，`CADisplayLink`有一个整型的`frameInterval`属性，指定了间隔多少帧之后才执行。默认值是1，意味着每次屏幕更新之前都会执行一次。但是如果动画的代码执行起来超过了六十分之一秒，你可以指定`frameInterval`为2，就是说动画每隔一帧执行一次（一秒钟30帧）或者3，也就是一秒钟20次，等等。
 
 用`CADisplayLink`而不是`NSTimer`，会保证帧率足够连续，使得动画看起来更加平滑，但即使`CADisplayLink`也不能*保证*每一帧都按计划执行，一些失去控制的离散的任务或者事件（例如资源紧张的后台程序）可能会导致动画偶尔地丢帧。当使用`NSTimer`的时候，一旦有机会计时器就会开启，但是`CADisplayLink`却不一样：如果它丢失了帧，就会直接忽略它们，然后在下一次更新的时候接着运行。
 
-###计算帧的持续时间
+### 计算帧的持续时间
 
 无论是使用`NSTimer`还是`CADisplayLink`，我们仍然需要处理一帧的时间超出了预期的六十分之一秒。由于我们不能够计算出一帧真实的持续时间，所以需要手动测量。我们可以在每帧开始刷新的时候用`CACurrentMediaTime()`记录当前时间，然后和上一帧记录的时间去比较。
 
@@ -219,7 +219,7 @@ float bounceEaseOut(float t)
 @end
 ```
 
-###Run Loop 模式
+### Run Loop 模式
 
 注意到当创建`CADisplayLink`的时候，我们需要指定一个`run loop`和`run loop mode`，对于run loop来说，我们就使用了主线程的run loop，因为任何用户界面的更新都需要在主线程执行，但是模式的选择就并不那么清楚了，每个添加到run loop的任务都有一个指定了优先级的模式，为了保证用户界面保持平滑，iOS会提供和用户界面相关任务的优先级，而且当UI很活跃的时候的确会暂停一些别的任务。
 
@@ -246,4 +246,15 @@ float bounceEaseOut(float t)
                                     repeats:YES];
     [[NSRunLoop mainRunLoop] addTimer:self.timer
                               forMode:NSRunLoopCommonModes];
-                              
+
+
+
+(去了解使用RunLoop优化动画的例子)
+
+https://www.jianshu.com/p/30f7ced70083
+
+https://toutiao.io/posts/301936/app_preview
+
+https://juejin.cn/post/6844903970326970381
+
+https://zhangyu.blog.csdn.net/article/details/72921158?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-3.control&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-3.control
