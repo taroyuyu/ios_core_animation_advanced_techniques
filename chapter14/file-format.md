@@ -1,9 +1,9 @@
 ## 文件格式
 
 
-&nbsp;&nbsp;&nbsp;&nbsp;图片加载性能取决于加载大图的时间和解压小图时间的权衡。很多苹果的文档都说PNG是iOS所有图片加载的最好格式。但这是极度误导的过时信息了。
+&nbsp;&nbsp;&nbsp;&nbsp;**图片加载性能取决于加载大图的时间和解压小图时间的权衡。很多苹果的文档都说PNG是iOS所有图片加载的最好格式。但这是极度误导的过时信息了**。
 
-&nbsp;&nbsp;&nbsp;&nbsp;PNG图片使用的无损压缩算法可以比使用JPEG的图片做到更快地解压，但是由于闪存访问的原因，这些加载的时间并没有什么区别。
+&nbsp;&nbsp;&nbsp;&nbsp;**PNG图片使用的无损压缩算法可以比使用JPEG的图片做到更快地解压，但是由于闪存访问的原因，这些加载的时间并没有什么区别**。
 
 &nbsp;&nbsp;&nbsp;&nbsp;清单14.6展示了标准的应用程序加载不同尺寸图片所需要时间的一些代码。为了保证实验的准确性，我们会测量每张图片的加载和绘制时间来确保考虑到解压性能的因素。另外每隔一秒重复加载和绘制图片，这样就可以取到平均时间，使得结果更加准确。
 
@@ -110,15 +110,15 @@ static NSString *const ImageFolder = @"Coast Photos";
 
 图14.5 不同类型图片的相对加载性能
 
-&nbsp;&nbsp;&nbsp;&nbsp;如结果所示，相对于不友好的PNG图片，相同像素的JPEG图片总是比PNG加载更快，除非一些非常小的图片、但对于友好的PNG图片，一些中大尺寸的图效果还是很好的。
+&nbsp;&nbsp;&nbsp;&nbsp;如结果所示，**相对于不友好的PNG图片，相同像素的JPEG图片总是比PNG加载更快，除非一些非常小的图片、但对于友好的PNG图片，一些中大尺寸的图效果还是很好的**。
 
 &nbsp;&nbsp;&nbsp;&nbsp;所以对于之前的图片传送器程序来说，JPEG会是个不错的选择。如果用JPEG的话，一些多线程和缓存策略都没必要了。
 
-&nbsp;&nbsp;&nbsp;&nbsp;但JPEG图片并不是所有情况都适用。如果图片需要一些透明效果，或者压缩之后细节损耗很多，那就该考虑用别的格式了。苹果在iOS系统中对PNG和JPEG都做了一些优化，所以普通情况下都应该用这种格式。也就是说在一些特殊的情况下才应该使用别的格式。
+&nbsp;&nbsp;&nbsp;&nbsp;**但JPEG图片并不是所有情况都适用。如果图片需要一些透明效果，或者压缩之后细节损耗很多，那就该考虑用别的格式了。苹果在iOS系统中对PNG和JPEG都做了一些优化，所以普通情况下都应该用这种格式。也就是说在一些特殊的情况下才应该使用别的格式。**
 
-###混合图片
+### 混合图片
 
-&nbsp;&nbsp;&nbsp;&nbsp;对于包含透明的图片来说，最好是使用压缩透明通道的PNG图片和压缩RGB部分的JPEG图片混合起来加载。这就对任何格式都适用了，而且无论从质量还是文件尺寸还是加载性能来说都和PNG和JPEG的图片相近。相关分别加载颜色和遮罩图片并在运行时合成的代码见14.7。
+&nbsp;&nbsp;&nbsp;&nbsp;**对于包含透明的图片来说，最好是使用压缩透明通道的PNG图片和压缩RGB部分的JPEG图片混合起来加载。这就对任何格式都适用了，而且无论从质量还是文件尺寸还是加载性能来说都和PNG和JPEG的图片相近**。相关分别加载颜色和遮罩图片并在运行时合成的代码见14.7。
 
 清单14.7 从PNG遮罩和JPEG创建的混合图片
 
@@ -158,17 +158,17 @@ static NSString *const ImageFolder = @"Coast Photos";
 
 &nbsp;&nbsp;&nbsp;&nbsp;对每张图片都使用两个独立的文件确实有些累赘。JPNG的库（[https://github.com/nicklockwood/JPNG](https://github.com/nicklockwood/JPNG)）对这个技术提供了一个开源的可以复用的实现，并且添加了直接使用`+imageNamed:`和`+imageWithContentsOfFile:`方法的支持。
 
-###JPEG 2000
+### JPEG 2000
 
 &nbsp;&nbsp;&nbsp;&nbsp;除了JPEG和PNG之外iOS还支持别的一些格式，例如TIFF和GIF，但是由于他们质量压缩得更厉害，性能比JPEG和PNG糟糕的多，所以大多数情况并不用考虑。
 
 &nbsp;&nbsp;&nbsp;&nbsp;但是iOS之后，苹果低调添加了对JPEG 2000图片格式的支持，所以大多数人并不知道。它甚至并不被Xcode很好的支持 - JPEG 2000图片都没在Interface Builder中显示。
 
-&nbsp;&nbsp;&nbsp;&nbsp;但是JPEG 2000图片在（设备和模拟器）运行时会有效，而且比JPEG质量更好，同样也对透明通道有很好的支持。但是JPEG 2000图片在加载和显示图片方面明显要比PNG和JPEG慢得多，所以对图片大小比运行效率更敏感的时候，使用它是一个不错的选择。
+&nbsp;&nbsp;&nbsp;&nbsp;但是JPEG 2000图片在（设备和模拟器）运行时会有效，而且**比JPEG质量更好，同样也对透明通道有很好的支持。但是JPEG 2000图片在加载和显示图片方面明显要比PNG和JPEG慢得多，所以对图片大小比运行效率更敏感的时候，使用它是一个不错的选择**。
 
 &nbsp;&nbsp;&nbsp;&nbsp;但仍然要对JPEG 2000保持关注，因为在后续iOS版本说不定就对它的性能做提升，但是在现阶段，混合图片对更小尺寸和质量的文件性能会更好。
 
-###PVRTC
+### PVRTC
 
 &nbsp;&nbsp;&nbsp;&nbsp;当前市场的每个iOS设备都使用了Imagination Technologies PowerVR图像芯片作为GPU。PowerVR芯片支持一种叫做PVRTC（PowerVR Texture Compression）的标准图片压缩。
 
